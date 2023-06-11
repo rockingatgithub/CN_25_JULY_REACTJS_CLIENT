@@ -10,18 +10,19 @@ const UserForm = (props) => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [isAdmin, setIsAdmin] = useState(false)
 
     const navigate = useNavigate()
 
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        console.log("Component mounted!")
-        // console.log("Name changed!")
+    //     console.log("Component mounted!")
+    //     // console.log("Name changed!")
 
-        return () => { console.log("Component unmounted!") }
+    //     return () => { console.log("Component unmounted!") }
 
-    }, [])
+    // }, [])
 
     const userSubmitHandler = async (event) => {
 
@@ -33,7 +34,8 @@ const UserForm = (props) => {
             password
         }
 
-        const signupResponse = await fetch('http://localhost:8000/student', {
+        const signupUrl = isAdmin ? 'http://localhost:8000/admin' : 'http://localhost:8000/student'
+        const signupResponse = await fetch(signupUrl, {
             method: 'POST',
             body: JSON.stringify(userObj),
             headers: {
@@ -60,7 +62,9 @@ const UserForm = (props) => {
             password
         }
 
-        const signinResponse = await fetch('http://localhost:8000/auth', {
+        const signinUrl = isAdmin ? 'http://localhost:8000/auth/admin' : 'http://localhost:8000/auth'
+        
+        const signinResponse = await fetch(signinUrl, {
             method: 'POST',
             body: JSON.stringify(userObj),
             headers: {
@@ -100,13 +104,11 @@ const UserForm = (props) => {
 
     const formHandler = props.signUp ? userSubmitHandler : loginHandler
     const formHeading = props.signUp ? 'Singup' : 'Signin'
-    const NameInput = <>Name:-<input />
-        <br />
-    </>
+    const isAdminLabel = props.signUp ? "Signup as admin" : "Signin as admin"
+
 
     return <>
         <h2> {formHeading}  </h2>
-
 
         <Form onSubmit={formHandler} >
 
@@ -124,6 +126,14 @@ const UserForm = (props) => {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type="password" placeholder="Password" value={password} onChange={(event) => setPassword(event.target.value)} />
             </Form.Group>
+
+            <Form.Check
+                type="switch"
+                label={isAdminLabel}
+                value={isAdmin}
+                onChange={() => setIsAdmin( (state) => !state  )}
+            />
+
             <Button variant="primary" type="submit">
                 Submit
             </Button>
