@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from '@react-oauth/google';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { connect, useDispatch } from "react-redux";
+import { increaseCounter, userSignupHandler } from "../actions/auth";
 
 const { useState, useEffect } = require("react")
 
@@ -14,43 +16,16 @@ const UserForm = (props) => {
 
     const navigate = useNavigate()
 
-
-    // useEffect(() => {
-
-    //     console.log("Component mounted!")
-    //     // console.log("Name changed!")
-
-    //     return () => { console.log("Component unmounted!") }
-
-    // }, [])
+    const dispatch = useDispatch()
 
     const userSubmitHandler = async (event) => {
-
         event.preventDefault()
-
         const userObj = {
             name,
             email,
             password
         }
-
-        const signupUrl = isAdmin ? 'http://localhost:8000/admin' : 'http://localhost:8000/student'
-        const signupResponse = await fetch(signupUrl, {
-            method: 'POST',
-            body: JSON.stringify(userObj),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        if (signupResponse.status === 200) {
-            const parsedResponse = await signupResponse.json()
-            props.setUser(parsedResponse.data)
-            navigate('/profile')
-            console.log(parsedResponse)
-        }
-
-
+        dispatch(userSignupHandler(userObj, isAdmin, navigate))
     }
 
     const loginHandler = async (event) => {
@@ -107,6 +82,8 @@ const UserForm = (props) => {
     const isAdminLabel = props.signUp ? "Signup as admin" : "Signin as admin"
 
 
+    console.log(props.main)
+
     return <>
         <h2> {formHeading}  </h2>
 
@@ -149,8 +126,19 @@ const UserForm = (props) => {
             }}
         />
 
+        <div>
+            <button onClick={() => dispatch(increaseCounter(10))} > Increase counter </button>
+            <span>{props.main.counter}</span>
+        </div>
+
     </>
 
 }
 
-export default UserForm
+const mapStateToProps = state => {
+    return {
+        main: state
+    }
+}
+
+export default connect(mapStateToProps)(UserForm)

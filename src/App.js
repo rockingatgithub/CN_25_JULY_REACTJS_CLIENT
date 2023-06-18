@@ -33,7 +33,7 @@ const App = () => {
 
       <Route path="/signup" element={<UserForm signUp setUser={setUser} />} />
       <Route path="/signin" element={<UserForm signUp={false} setUser={setUser} />} />
-      <Route path="/profile" element={<Dashboard user={user} />} />
+      <Route path="/profile" element={<Dashboard />} />
 
     </Routes>
 
