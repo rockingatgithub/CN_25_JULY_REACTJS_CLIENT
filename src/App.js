@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { Link, Route, Routes } from "react-router-dom"
 
 import Container from 'react-bootstrap/Container';
@@ -10,8 +10,6 @@ import UserForm from "./component/UserForm"
 
 const App = () => {
 
-  const [user, setUser] = useState({})
-
   return <>
 
     <Navbar bg="light" expand="lg">
@@ -20,9 +18,9 @@ const App = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-              <Link to='/signup' > Signup </Link>  
-             <Link to='/signin' > Signin </Link>  
-             <Link to='/profile' > Profile </Link>
+            <Link to='/signup' > Signup </Link>  
+            <Link to='/signin' > Signin </Link>  
+            <Link to='/profile' > Profile </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -31,8 +29,8 @@ const App = () => {
 
     <Routes>
 
-      <Route path="/signup" element={<UserForm signUp setUser={setUser} />} />
-      <Route path="/signin" element={<UserForm signUp={false} setUser={setUser} />} />
+      <Route path="/signup" element={<UserForm signUp />} />
+      <Route path="/signin" element={<UserForm signUp={false} />} />
       <Route path="/profile" element={<Dashboard />} />
 
     </Routes>

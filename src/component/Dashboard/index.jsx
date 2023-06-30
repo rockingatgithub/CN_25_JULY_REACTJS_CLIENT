@@ -5,8 +5,8 @@ const Dashboard = (props) => {
     return <div>
 
         <h2>User Profile</h2>
-        <div> Name:- {props.main.user.name} </div>
-        <div> Email:- {props.main.user.email} </div>
+        <div> Name:- {props.main.user?.name} </div>
+        <div> Email:- {props.main.user?.email} </div>
 
     </div>
 

@@ -23,9 +23,9 @@ class Login extends React.Component {
 
     incrementHandler = () => {
 
-        this.setState((prevState, prevProps) => ({ counter: prevState.counter + 1 }) )
-        this.setState((prevState, prevProps) => ({ counter: prevState.counter + 1 }))
-        this.setState((prevState, prevProps) => ({ counter: prevState.counter + 1 }))
+        this.setState((prevState) => ({ counter: prevState.counter + 1 }) )
+        this.setState((prevState) => ({ counter: prevState.counter + 1 }))
+        this.setState((prevState) => ({ counter: prevState.counter + 1 }))
 
     }
 

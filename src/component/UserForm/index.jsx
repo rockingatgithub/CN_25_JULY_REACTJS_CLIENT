@@ -3,9 +3,8 @@ import { GoogleLogin } from '@react-oauth/google';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { connect, useDispatch } from "react-redux";
-import { increaseCounter, userSignupHandler } from "../actions/auth";
-
-const { useState, useEffect } = require("react")
+import { googleAuthHandler, userLoginHandler, userSignupHandler } from "../actions/auth";
+import { useState} from "react"
 
 const UserForm = (props) => {
 
@@ -15,7 +14,6 @@ const UserForm = (props) => {
     const [isAdmin, setIsAdmin] = useState(false)
 
     const navigate = useNavigate()
-
     const dispatch = useDispatch()
 
     const userSubmitHandler = async (event) => {
@@ -29,60 +27,21 @@ const UserForm = (props) => {
     }
 
     const loginHandler = async (event) => {
-
         event.preventDefault()
-
         const userObj = {
             email,
             password
         }
-
-        const signinUrl = isAdmin ? 'http://localhost:8000/auth/admin' : 'http://localhost:8000/auth'
-        
-        const signinResponse = await fetch(signinUrl, {
-            method: 'POST',
-            body: JSON.stringify(userObj),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        if (signinResponse.status === 200) {
-            const parsedResponse = await signinResponse.json()
-            props.setUser(parsedResponse.data)
-            navigate('/profile')
-            console.log(parsedResponse)
-        }
-
+        dispatch(userLoginHandler(userObj, isAdmin, navigate))
     }
 
     const googleLoginHandler = async credentialResponse => {
-
-        console.log(credentialResponse)
-
-        const googleLoginresponse = await fetch('http://localhost:8000/auth/google', {
-            method: 'POST',
-            body: JSON.stringify({ token: credentialResponse.credential }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        if (googleLoginresponse.status === 200) {
-            const parsedResponse = await googleLoginresponse.json()
-            props.setUser(parsedResponse.data)
-            navigate('/profile')
-            console.log(parsedResponse)
-        }
-
+        dispatch(googleAuthHandler(credentialResponse.credential, navigate))
     }
 
     const formHandler = props.signUp ? userSubmitHandler : loginHandler
     const formHeading = props.signUp ? 'Singup' : 'Signin'
     const isAdminLabel = props.signUp ? "Signup as admin" : "Signin as admin"
-
-
-    console.log(props.main)
 
     return <>
         <h2> {formHeading}  </h2>
@@ -114,23 +73,17 @@ const UserForm = (props) => {
             <Button variant="primary" type="submit">
                 Submit
             </Button>
+
+            <GoogleLogin
+                style={{width: '50%', margin: 'auto'}}
+                onSuccess={credentialResponse => {
+                    googleLoginHandler(credentialResponse)
+                }}
+                onError={() => {
+                    console.log('Login Failed');
+                }}
+            />
         </Form>
-
-        <GoogleLogin
-            style={{width: '50%', margin: 'auto'}}
-            onSuccess={credentialResponse => {
-                googleLoginHandler(credentialResponse)
-            }}
-            onError={() => {
-                console.log('Login Failed');
-            }}
-        />
-
-        <div>
-            <button onClick={() => dispatch(increaseCounter(10))} > Increase counter </button>
-            <span>{props.main.counter}</span>
-        </div>
-
     </>
 
 }
